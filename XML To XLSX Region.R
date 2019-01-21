@@ -1,0 +1,104 @@
+
+require(xml2) ||  install.packages("xml2")
+require(purrr)||  install.packages("purrr")
+require(xlsx) ||  install.packages("xlsx")
+
+region_xml_data <- read_xml(file.choose())
+
+
+region_out1 <- xml_find_all(region_xml_data, ".//Region_Area//Region_Country") %>% 
+  map_df(function(x) {
+    list(
+      label=xml_find_first(x, ".//label") %>%  xml_text(), 
+      owlcode=xml_find_first(x, ".//owlCode") %>%  xml_text(),
+      cmsID = xml_find_first(x, ".//cmsID") %>%  xml_text(),
+      referenceListStatus = xml_find_first(x, ".//referenceListStatus") %>%  xml_text()
+    )
+})
+
+region_out2 <- xml_find_all(region_xml_data, ".//Region_Subregion//Region_Area") %>% 
+  map_df(function(x) {
+    list(
+      label=xml_find_first(x, ".//label") %>%  xml_text(), 
+      owlcode=xml_find_first(x, ".//owlCode") %>%  xml_text(),
+      cmsID = xml_find_first(x, ".//cmsID") %>%  xml_text(),
+      referenceListStatus = xml_find_first(x, ".//referenceListStatus") %>%  xml_text()
+    )
+  })
+
+region_out3 <- xml_find_all(region_xml_data, ".//Region//Region_Subregion") %>% 
+  map_df(function(x) {
+    list(
+      label=xml_find_first(x, ".//label") %>%  xml_text(), 
+      owlcode=xml_find_first(x, ".//owlCode") %>%  xml_text(),
+      cmsID = xml_find_first(x, ".//cmsID") %>%  xml_text(),
+      referenceListStatus = xml_find_first(x, ".//referenceListStatus") %>%  xml_text()
+    )
+  })
+
+region_out4 <- xml_find_all(region_xml_data, ".//Region") %>% 
+  map_df(function(x) {
+    list(
+      label=xml_find_first(x, ".//label") %>%  xml_text(), 
+      owlcode=xml_find_first(x, ".//owlCode") %>%  xml_text(),
+      cmsID = xml_find_first(x, ".//cmsID") %>%  xml_text(),
+      referenceListStatus = xml_find_first(x, ".//referenceListStatus") %>%  xml_text()
+    )
+  })
+
+region_result=rbind(region_out1,region_out2,region_out3,region_out4)
+typeof(region_result)
+region_result <- as.data.frame(region_result)
+write.xlsx2(region_result, "C:/Users/SRIVAPAW/Desktop/RegionTaxonomy.xlsx", sheetName = "Region", 
+            col.names = TRUE, row.names = FALSE, append = FALSE)
+
+
+
+# xml_data <- xmlToList(file.choose())
+# xmldoc <- read_xml(file.choose())
+# 
+# 
+# sector_out1 <- xml_find_all(sector_xml_data, ".//SectorL1") %>% 
+#   map_df(function(x) {
+#     list(
+#       label=xml_find_first(x, ".//label") %>%  xml_text(), 
+#       owlcode=xml_find_first(x, ".//owlCode") %>%  xml_text(),
+#       cmsID = xml_find_first(x, ".//cmsID") %>%  xml_text(),
+#       referenceListStatus = xml_find_first(x, ".//referenceListStatus") %>%  xml_text(),
+#     )
+#   })
+# 
+# sector_out2 <- xml_find_all(sector_xml_data, ".//SectorL1//SectorL2") %>% 
+#   map_df(function(x) {
+#     list(
+#       label=xml_find_first(x, ".//label") %>%  xml_text(), 
+#       owlcode=xml_find_first(x, ".//owlCode") %>%  xml_text(),
+#       cmsID = xml_find_first(x, ".//cmsID") %>%  xml_text(),
+#       referenceListStatus = xml_find_first(x, ".//referenceListStatus") %>%  xml_text(),
+#     )
+#   })
+# 
+# sector_out3 <- xml_find_all(sector_xml_data, ".//SectorL1//SectorL2//SectorL3") %>% 
+#   map_df(function(x) {
+#     list(
+#       label=xml_find_first(x, ".//label") %>%  xml_text(), 
+#       owlcode=xml_find_first(x, ".//owlCode") %>%  xml_text(),
+#       cmsID = xml_find_first(x, ".//cmsID") %>%  xml_text(),
+#       referenceListStatus = xml_find_first(x, ".//referenceListStatus") %>%  xml_text(),
+#     )
+#   })
+# 
+# sector_out4 <- xml_find_all(sector_xml_data, ".//SectorL1//SectorL2//SectorL3//SectorL4") %>% 
+#   map_df(function(x) {
+#     list(
+#       label=xml_find_first(x, ".//label") %>%  xml_text(), 
+#       owlcode=xml_find_first(x, ".//owlCode") %>%  xml_text(),
+#       cmsID = xml_find_first(x, ".//cmsID") %>%  xml_text(),
+#       referenceListStatus = xml_find_first(x, ".//referenceListStatus") %>%  xml_text(),
+#     )
+#   })
+# 
+# sector_result=rbind(sector_out1,sector_out2,sector_out3,sector_out4)
+# 
+# write.xlsx2(sector_result, "//ad.moodys.net/mis_amr_dfs/MIS_Research/Data/Taxonomy/BG to EDW Migration/SectorTaxonomy.xlsx", sheetName = "Sector", 
+#             col.names = TRUE, row.names = FALSE, append = FALSE)
